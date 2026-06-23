@@ -42,6 +42,19 @@ describe("/users", () => {
     const carol = await getUserByUsername(env.DATABASE, "carol");
     expect(carol.allowed_types).toBe("image");
   });
+  it("duplicate-username create redirects with ?err=exists and the page renders the mapped message", async () => {
+    // bob already exists from the seed → creating "bob" again must fail with exists.
+    const res = await call(form(aTok, "https://test.local/users/create", "username=bob&password=secret1&role=user&allowed_types=*"));
+    expect(res.status).toBe(302);
+    expect(res.headers.get("Location")).toBe("/users?err=exists");
+    // GET the redirect target → error banner shows the human Chinese message.
+    const html = await (await call(new Request("https://test.local/users?err=exists", { headers: { Cookie: cookieOf(aTok) } }))).text();
+    expect(html).toContain("用户名已存在");
+  });
+  it("unknown err code renders no banner", async () => {
+    const html = await (await call(new Request("https://test.local/users?err=bogus", { headers: { Cookie: cookieOf(aTok) } }))).text();
+    expect(html).not.toContain('class="err"');
+  });
   it("update allowed_types persists", async () => {
     await call(form(aTok, "https://test.local/users/update", `id=${uId}&field=allowed_types&value=video`));
     const bob = await getUserByUsername(env.DATABASE, "bob");

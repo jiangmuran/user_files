@@ -1,14 +1,21 @@
 import { resolveUser, isSameOrigin } from "../auth/middleware.js";
 import {
   listUsers, getUserById, getUserByUsername, createUser,
-  updateUserRole, updateUserAllowedTypes, updateUserPassword, deleteUser, countAdmins,
+  updateUserRole, updateUserAllowedTypes, updateUserPassword, deleteUserCascade, countAdmins,
 } from "../db/users.js";
-import { listMediaUrlsByOwner, deleteMediaByOwner } from "../db/media.js";
-import { deleteApiKeysByUser } from "../db/apikeys.js";
+import { listMediaUrlsByOwner } from "../db/media.js";
 import { hashPassword } from "../auth/password.js";
 import { normalizeAllowedTypes } from "../auth/filetypes.js";
 import { htmlResponse, redirect } from "../utils/http.js";
 import { usersPage } from "../views/usersPage.js";
+
+const ERR_MESSAGES = {
+  invalid: "用户名≥3位、密码≥6位",
+  exists: "用户名已存在",
+  notfound: "用户不存在",
+  self: "不能删除自己",
+  lastadmin: "不能删除或降级最后一个管理员",
+};
 
 async function guardAdmin(request, env, config) {
   const auth = await resolveUser(request, env, config);
@@ -21,7 +28,8 @@ export async function handleUsersPage(request, env, config) {
   const g = await guardAdmin(request, env, config);
   if (g.fail) return g.fail;
   const users = await listUsers(env.DATABASE);
-  return htmlResponse(usersPage({ users, currentUser: g.auth.user }), 200, { "Cache-Control": "no-store" });
+  const error = ERR_MESSAGES[new URL(request.url).searchParams.get("err")] || "";
+  return htmlResponse(usersPage({ users, currentUser: g.auth.user, error }), 200, { "Cache-Control": "no-store" });
 }
 
 export async function handleUsersAction(request, env, config, action) {
@@ -52,14 +60,14 @@ export async function handleUsersAction(request, env, config, action) {
     if (target.id === g.auth.user.id) return redirect("/users?err=self");
     if (target.role === "admin" && (await countAdmins(db)) <= 1) return redirect("/users?err=lastadmin");
     // Hardening (beyond brief): production D1 may not enforce FK ON DELETE CASCADE,
-    // so explicitly remove the user's media (+ evict from Cache API) and api_keys
-    // rather than relying solely on the schema cascade.
+    // so explicitly remove the user's media and api_keys rather than relying solely
+    // on the schema cascade. The DB writes run in a single D1 transaction (batch) so a
+    // mid-way failure can't orphan rows; cache eviction happens AFTER the batch commits
+    // (the Cache API isn't transactional).
     const urls = await listMediaUrlsByOwner(db, id);
+    await deleteUserCascade(db, id);
     const cache = caches.default;
     await Promise.all(urls.map((u) => cache.delete(new Request(u))));
-    await deleteMediaByOwner(db, id);
-    await deleteApiKeysByUser(db, id);
-    await deleteUser(db, id);
     return redirect("/users");
   }
 

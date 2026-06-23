@@ -38,3 +38,13 @@ export async function updateUserRole(db, id, role) {
 export async function deleteUser(db, id) {
   await db.prepare("DELETE FROM users WHERE id = ?").bind(id).run();
 }
+// Atomically delete a user and all owned rows (media + api_keys) in a single
+// D1 transaction so a mid-way failure can't orphan rows. Cache eviction is the
+// caller's job and must happen AFTER this resolves (the Cache API isn't transactional).
+export async function deleteUserCascade(db, id) {
+  await db.batch([
+    db.prepare("DELETE FROM media WHERE owner_id = ?").bind(id),
+    db.prepare("DELETE FROM api_keys WHERE user_id = ?").bind(id),
+    db.prepare("DELETE FROM users WHERE id = ?").bind(id),
+  ]);
+}

@@ -4,6 +4,7 @@ import worker from "../../src/index.js";
 import { createUser } from "../../src/db/users.js";
 import { createApiKey } from "../../src/db/apikeys.js";
 import { generateApiKey, hashApiKey } from "../../src/auth/apikey.js";
+import { signSession, sessionCookieHeader } from "../../src/auth/session.js";
 
 async function call(req) {
   const ctx = createExecutionContext();
@@ -48,6 +49,15 @@ describe("POST /api/upload", () => {
     const fd = new FormData();
     fd.append("file", new File([new Uint8Array(3)], "p.png", { type: "image/png" }), "p.png");
     const res = await call(new Request("https://test.local/api/upload", { method: "POST", body: fd }));
+    expect(res.status).toBe(401);
+  });
+  it("401 with a valid SESSION cookie (not an API key) — API isolation invariant", async () => {
+    // A logged-in browser session must NOT be able to drive the API key endpoint.
+    const token = await signSession({ uid, role: "user", ver: 0 }, env.SESSION_SECRET);
+    const cookie = sessionCookieHeader(token).split(";")[0];
+    const fd = new FormData();
+    fd.append("file", new File([new Uint8Array(3)], "p.png", { type: "image/png" }), "p.png");
+    const res = await call(new Request("https://test.local/api/upload", { method: "POST", headers: { Cookie: cookie }, body: fd }));
     expect(res.status).toBe(401);
   });
   it("415 disallowed type", async () => {

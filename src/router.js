@@ -3,6 +3,7 @@ import { handleLogin, handleLogout } from "./handlers/login.js";
 import { handleHome } from "./handlers/home.js";
 import { handleUpload } from "./handlers/upload.js";
 import { handleApiUpload } from "./handlers/apiUpload.js";
+import { handleImage } from "./handlers/image.js";
 
 export async function route(request, env, config) {
   const { pathname } = new URL(request.url);
@@ -20,6 +21,6 @@ export async function route(request, env, config) {
     case "/api/upload":
       return handleApiUpload(request, env, config);
     default:
-      return new Response("Not Found", { status: 404 });
+      return handleImage(request, env, config);
   }
 }

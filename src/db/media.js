@@ -91,6 +91,16 @@ export async function deleteMedia(db, urls, { ownerId = null } = {}) {
   return res.meta.changes;
 }
 
+export async function listMediaUrlsByOwner(db, ownerId) {
+  const { results } = await db.prepare("SELECT url FROM media WHERE owner_id = ?").bind(ownerId).all();
+  return results.map((r) => r.url);
+}
+
+export async function deleteMediaByOwner(db, ownerId) {
+  const res = await db.prepare("DELETE FROM media WHERE owner_id = ?").bind(ownerId).run();
+  return res.meta.changes;
+}
+
 export async function assignOwnerlessMedia(db, ownerId) {
   const res = await db.prepare("UPDATE media SET owner_id = ? WHERE owner_id IS NULL").bind(ownerId).run();
   return res.meta.changes;

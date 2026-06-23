@@ -19,6 +19,10 @@ export async function deleteApiKey(db, id, userId) {
   const res = await db.prepare("DELETE FROM api_keys WHERE id = ? AND user_id = ?").bind(id, userId).run();
   return res.meta.changes > 0;
 }
+export async function deleteApiKeysByUser(db, userId) {
+  const res = await db.prepare("DELETE FROM api_keys WHERE user_id = ?").bind(userId).run();
+  return res.meta.changes;
+}
 export async function touchApiKey(db, id, ts) {
   await db.prepare("UPDATE api_keys SET last_used_at = ? WHERE id = ?").bind(ts, id).run();
 }

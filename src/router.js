@@ -7,6 +7,7 @@ import { handleImage } from "./handlers/image.js";
 import { handleBing } from "./handlers/bing.js";
 import { handleDelete } from "./handlers/delete.js";
 import { handleAdmin } from "./handlers/admin.js";
+import { handleUsersPage, handleUsersAction } from "./handlers/users.js";
 
 export async function route(request, env, config) {
   const { pathname } = new URL(request.url);
@@ -29,6 +30,14 @@ export async function route(request, env, config) {
       return handleDelete(request, env, config);
     case "/admin":
       return handleAdmin(request, env, config);
+    case "/users":
+      return handleUsersPage(request, env, config);
+    case "/users/create":
+      return handleUsersAction(request, env, config, "create");
+    case "/users/update":
+      return handleUsersAction(request, env, config, "update");
+    case "/users/delete":
+      return handleUsersAction(request, env, config, "delete");
     default:
       return handleImage(request, env, config);
   }

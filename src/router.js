@@ -6,6 +6,7 @@ import { handleApiUpload } from "./handlers/apiUpload.js";
 import { handleImage } from "./handlers/image.js";
 import { handleBing } from "./handlers/bing.js";
 import { handleDelete } from "./handlers/delete.js";
+import { handleAdmin } from "./handlers/admin.js";
 
 export async function route(request, env, config) {
   const { pathname } = new URL(request.url);
@@ -26,6 +27,8 @@ export async function route(request, env, config) {
       return handleBing();
     case "/delete-images":
       return handleDelete(request, env, config);
+    case "/admin":
+      return handleAdmin(request, env, config);
     default:
       return handleImage(request, env, config);
   }

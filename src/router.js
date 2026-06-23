@@ -8,6 +8,7 @@ import { handleBing } from "./handlers/bing.js";
 import { handleDelete } from "./handlers/delete.js";
 import { handleAdmin } from "./handlers/admin.js";
 import { handleUsersPage, handleUsersAction } from "./handlers/users.js";
+import { handleApiKeysPage, handleApiKeysAction } from "./handlers/apikeysUi.js";
 
 export async function route(request, env, config) {
   const { pathname } = new URL(request.url);
@@ -38,6 +39,12 @@ export async function route(request, env, config) {
       return handleUsersAction(request, env, config, "update");
     case "/users/delete":
       return handleUsersAction(request, env, config, "delete");
+    case "/apikeys":
+      return handleApiKeysPage(request, env, config);
+    case "/apikeys/create":
+      return handleApiKeysAction(request, env, config, "create");
+    case "/apikeys/delete":
+      return handleApiKeysAction(request, env, config, "delete");
     default:
       return handleImage(request, env, config);
   }

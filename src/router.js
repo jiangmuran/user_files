@@ -5,6 +5,7 @@ import { handleUpload } from "./handlers/upload.js";
 import { handleApiUpload } from "./handlers/apiUpload.js";
 import { handleImage } from "./handlers/image.js";
 import { handleBing } from "./handlers/bing.js";
+import { handleDelete } from "./handlers/delete.js";
 
 export async function route(request, env, config) {
   const { pathname } = new URL(request.url);
@@ -23,6 +24,8 @@ export async function route(request, env, config) {
       return handleApiUpload(request, env, config);
     case "/bing-images":
       return handleBing();
+    case "/delete-images":
+      return handleDelete(request, env, config);
     default:
       return handleImage(request, env, config);
   }

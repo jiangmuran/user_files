@@ -4,7 +4,7 @@ import worker from "../../src/index.js";
 
 describe("smoke", () => {
   it("responds 200 and DATABASE binding exists", async () => {
-    const req = new Request("https://example.com/");
+    const req = new Request("https://example.com/setup");
     const ctx = createExecutionContext();
     const res = await worker.fetch(req, env, ctx);
     await waitOnExecutionContext(ctx);

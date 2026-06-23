@@ -1,5 +1,9 @@
+import { extractConfig } from "./config.js";
+import { route } from "./router.js";
+
 export default {
   async fetch(request, env) {
-    return new Response("user-files booting", { status: 200 });
+    const config = extractConfig(env);
+    return route(request, env, config);
   },
 };

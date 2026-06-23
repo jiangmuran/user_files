@@ -1,9 +1,12 @@
 import { handleSetup } from "./handlers/setup.js";
 import { handleLogin, handleLogout } from "./handlers/login.js";
+import { handleHome } from "./handlers/home.js";
 
 export async function route(request, env, config) {
   const { pathname } = new URL(request.url);
   switch (pathname) {
+    case "/":
+      return handleHome(request, env, config);
     case "/setup":
       return handleSetup(request, env, config);
     case "/login":

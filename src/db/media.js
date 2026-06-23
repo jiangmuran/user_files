@@ -1,4 +1,4 @@
-import { extensionOf, categoryForExtension } from "../auth/filetypes.js";
+import { extensionOf } from "../auth/filetypes.js";
 
 const IMAGE_EXTS = ["jpg", "jpeg", "png", "gif", "webp", "bmp", "svg", "tiff", "tif", "ico", "avif"];
 const VIDEO_EXTS = ["mp4", "avi", "mov", "webm", "mkv", "wmv", "flv", "m4v", "mpeg", "mpg"];

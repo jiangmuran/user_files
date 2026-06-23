@@ -16,7 +16,7 @@ export function categoryForExtension(ext) {
 }
 
 export function normalizeAllowedTypes(input) {
-  if (!input || input === "*") return input === "*" ? "*" : "*";
+  if (!input || input === "*") return "*";
   const parts = String(input)
     .split(",")
     .map((s) => s.trim().toLowerCase())

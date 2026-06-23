@@ -531,11 +531,6 @@ const UPLOADER = `
           return hash + '-' + file.size + '-' + file.lastModified;
         }
 
-        function isFileInCache(fileHash) {
-          const cacheData = JSON.parse(localStorage.getItem('uploadCache')) || [];
-          return cacheData.some(item => item.hash === fileHash);
-        }
-
         async function uploadFile(file, fileHash) {
           const originalFile = file;
           try {

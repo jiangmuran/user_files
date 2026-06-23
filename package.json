@@ -1,0 +1,18 @@
+{
+  "name": "user-files",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "dev": "wrangler dev",
+    "deploy": "wrangler deploy",
+    "test": "vitest run",
+    "test:watch": "vitest",
+    "migrate:local": "wrangler d1 migrations apply DATABASE --local",
+    "migrate:remote": "wrangler d1 migrations apply DATABASE --remote"
+  },
+  "devDependencies": {
+    "wrangler": "^3.90.0",
+    "vitest": "~2.1.0",
+    "@cloudflare/vitest-pool-workers": "^0.5.0"
+  }
+}

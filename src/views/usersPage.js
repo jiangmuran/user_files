@@ -27,7 +27,7 @@ function row(u, currentUser) {
     <td>
       <form method="post" action="/users/update" class="inline">
         <input type="hidden" name="id" value="${id}"><input type="hidden" name="field" value="allowed_types">
-        <input class="input" name="value" value="${escapeHtml(u.allowed_types)}" placeholder="* 或 image,video">
+        <input class="input" name="value" value="${escapeHtml(u.allowed_types)}" placeholder="* / image,video,other,html">
         <button class="btn btn-sm" type="submit">保存</button>
       </form>
     </td>
@@ -57,7 +57,7 @@ export function usersPage({ users, currentUser, error = "" }) {
     <input class="input" name="username" placeholder="用户名 ≥3" required>
     <input class="input" name="password" type="password" placeholder="密码 ≥6" required>
     <select class="select" name="role"><option value="user">user</option><option value="admin">admin</option></select>
-    <input class="input" name="allowed_types" value="*" placeholder="允许类型: * 或 image,video">
+    <input class="input" name="allowed_types" value="image,video,other" placeholder="允许类型: * / image,video,other,html">
     <button class="btn btn-primary" type="submit">创建用户</button>
   </form>
   <div class="table-wrap"><table class="tbl">

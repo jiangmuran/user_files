@@ -58,4 +58,22 @@ describe("image serving (default route)", () => {
     expect(res2.status).toBe(200);
     expect(res2.headers.get("Content-Type")).toBe("image/png");
   });
+
+  it("renders uploaded .html in a sandboxed iframe with a notice banner", async () => {
+    const url = "https://test.local/uploads/1700000000003.html";
+    await insertMedia(env.DATABASE, { url, fileId: "FIDH", ownerId: 1, filename: "page.html", contentType: "text/html", extension: "html", size: 1, createdAt: 1 });
+    fetchMock.get("https://api.telegram.org").intercept({ path: (p) => p.includes("/getFile"), method: "GET" })
+      .reply(200, { ok: true, result: { file_path: "docs/p.html" } });
+    fetchMock.get("https://api.telegram.org").intercept({ path: (p) => p.includes("/file/botTESTTOKEN/") })
+      .reply(200, "<h1>Hi</h1><script>alert(1)</script>", { headers: { "Content-Type": "text/plain" } });
+    const res = await call(new Request(url));
+    expect(res.status).toBe(200);
+    expect(res.headers.get("Content-Type")).toContain("text/html");
+    const html = await res.text();
+    expect(html).toContain("report@muran.tech");      // notice banner present
+    expect(html).toMatch(/sandbox="[^"]*"/);           // rendered inside a sandbox
+    expect(html).not.toMatch(/allow-same-origin/);     // SECURITY: never same-origin
+    expect(html).toContain("srcdoc=");
+    expect(html).toContain("<h1>Hi</h1>");             // user content embedded
+  });
 });

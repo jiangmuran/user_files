@@ -1,6 +1,8 @@
 const IMAGE = new Set(["jpg", "jpeg", "png", "gif", "webp", "bmp", "svg", "tiff", "tif", "ico", "avif"]);
 const VIDEO = new Set(["mp4", "avi", "mov", "webm", "mkv", "wmv", "flv", "m4v", "mpeg", "mpg"]);
-const CATEGORIES = ["image", "video", "other"];
+// html is its own category: it renders/executes, so it's gated separately from "other".
+const HTML = new Set(["html", "htm"]);
+const CATEGORIES = ["image", "video", "other", "html"];
 
 export function extensionOf(filename) {
   const name = String(filename || "");
@@ -12,6 +14,7 @@ export function extensionOf(filename) {
 export function categoryForExtension(ext) {
   if (IMAGE.has(ext)) return "image";
   if (VIDEO.has(ext)) return "video";
+  if (HTML.has(ext)) return "html";
   return "other";
 }
 

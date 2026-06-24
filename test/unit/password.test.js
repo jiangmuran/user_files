@@ -5,7 +5,7 @@ describe("password", () => {
   it("hash format is pbkdf2$iter$salt$hash", async () => {
     const h = await hashPassword("hunter2");
     expect(h.split("$")).toHaveLength(4);
-    expect(h.startsWith("pbkdf2$150000$")).toBe(true);
+    expect(h.startsWith("pbkdf2$100000$")).toBe(true);
   });
   it("verifies correct password", async () => {
     const h = await hashPassword("p@ss:word");

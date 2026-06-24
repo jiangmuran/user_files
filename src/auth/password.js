@@ -1,4 +1,6 @@
-const ITERATIONS = 150000;
+// Cloudflare Workers' WebCrypto rejects PBKDF2 iteration counts above 100000,
+// so 100000 is the maximum we can use in production (miniflare allows more).
+const ITERATIONS = 100000;
 const KEYLEN_BITS = 256;
 const enc = new TextEncoder();
 

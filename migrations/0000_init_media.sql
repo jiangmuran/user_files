@@ -1,0 +1,4 @@
+CREATE TABLE IF NOT EXISTS media (
+  url TEXT PRIMARY KEY,
+  fileId TEXT NOT NULL
+);

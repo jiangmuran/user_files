@@ -1,0 +1,14 @@
+name = "user-files"
+main = "src/index.js"
+compatibility_date = "2024-11-01"
+compatibility_flags = ["nodejs_compat"]
+
+[[d1_databases]]
+binding = "DATABASE"
+database_name = "images"
+database_id = "REPLACE_WITH_YOUR_D1_ID"
+migrations_dir = "migrations"
+
+[vars]
+DOMAIN = "example.workers.dev"
+# secrets（用 `wrangler secret put`）：SESSION_SECRET / TG_BOT_TOKEN / TG_CHAT_ID

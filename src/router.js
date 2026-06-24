@@ -46,6 +46,8 @@ export async function route(request, env, config) {
     case "/apikeys/delete":
       return handleApiKeysAction(request, env, config, "delete");
     default:
-      return handleImage(request, env, config);
+      // Files are served under /uploads/<ts>.<ext> — never bare at the root.
+      if (pathname.startsWith("/uploads/")) return handleImage(request, env, config);
+      return new Response("Not Found", { status: 404 });
   }
 }

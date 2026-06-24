@@ -35,7 +35,7 @@ export async function performUpload({ file, user, env, config }) {
 
   const ext = extensionOf(file.name);
   const ts = Date.now();
-  const url = `https://${config.domain}/${ts}.${ext}`;
+  const url = `https://${config.domain}/uploads/${ts}.${ext}`;
   await insertMedia(env.DATABASE, {
     url, fileId, ownerId: user.id, filename: file.name,
     contentType: getContentType(ext), extension: ext, size: file.size, createdAt: ts,

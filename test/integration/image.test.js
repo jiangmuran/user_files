@@ -23,11 +23,11 @@ beforeEach(async () => {
 
 describe("image serving (default route)", () => {
   it("404 for unknown url (DB miss is cacheable)", async () => {
-    const res = await call(new Request("https://test.local/doesnotexist.png"));
+    const res = await call(new Request("https://test.local/uploads/doesnotexist.png"));
     expect(res.status).toBe(404);
   });
   it("serves file with correct content-type when present", async () => {
-    const url = "https://test.local/1700000000001.png";
+    const url = "https://test.local/uploads/1700000000001.png";
     await insertMedia(env.DATABASE, { url, fileId: "FID", ownerId: 1, filename: "a.png", contentType: "image/png", extension: "png", size: 1, createdAt: 1 });
     fetchMock.get("https://api.telegram.org").intercept({ path: (p) => p.includes("/getFile"), method: "GET" })
       .reply(200, { ok: true, result: { file_path: "photos/x.png" } });
@@ -38,7 +38,7 @@ describe("image serving (default route)", () => {
     expect(res.headers.get("Content-Type")).toBe("image/png");
   });
   it("transient Telegram getFile failure → 502 (NOT cached as 404)", async () => {
-    const url = "https://test.local/1700000000002.png";
+    const url = "https://test.local/uploads/1700000000002.png";
     await insertMedia(env.DATABASE, { url, fileId: "FID2", ownerId: 1, filename: "b.png", contentType: "image/png", extension: "png", size: 1, createdAt: 1 });
     // getFile fails 3× → handler retries exactly 3 times then gives up.
     fetchMock.get("https://api.telegram.org").intercept({ path: (p) => p.includes("/getFile"), method: "GET" }).reply(500, {}).times(3);

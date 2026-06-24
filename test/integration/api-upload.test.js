@@ -41,7 +41,7 @@ describe("POST /api/upload", () => {
     const res = await call(apiReq(key, "p.png", "image/png"));
     expect(res.status).toBe(200);
     const json = await res.json();
-    expect(json.url).toMatch(/^https:\/\/test\.local\/\d+\.png$/);
+    expect(json.url).toMatch(/^https:\/\/test\.local\/uploads\/\d+\.png$/);
     const row = await env.DATABASE.prepare("SELECT owner_id FROM media WHERE url=?").bind(json.url).first();
     expect(row.owner_id).toBe(uid);
   });

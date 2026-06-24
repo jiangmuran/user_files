@@ -39,7 +39,7 @@ describe("POST /upload", () => {
     const res = await call(uploadReq(imgToken, "pic.png", "image/png"));
     expect(res.status).toBe(200);
     const json = await res.json();
-    expect(json.data).toMatch(/^https:\/\/test\.local\/\d+\.png$/);
+    expect(json.data).toMatch(/^https:\/\/test\.local\/uploads\/\d+\.png$/);
     const row = await env.DATABASE.prepare("SELECT owner_id, extension FROM media WHERE url=?").bind(json.data).first();
     expect(row.owner_id).toBe(imgUser);
     expect(row.extension).toBe("png");

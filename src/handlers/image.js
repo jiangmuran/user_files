@@ -22,9 +22,11 @@ function htmlWrapper(raw) {
     font:13px/1.45 ui-monospace,SFMono-Regular,Menlo,Consolas,monospace}
   .uf-banner b{color:#f2a33c}
   .uf-banner a{color:#f2a33c}
+  .uf-x{margin-left:auto;flex:none;background:none;border:0;color:#8b949e;font:16px/1 ui-monospace,Menlo,monospace;cursor:pointer;padding:4px 8px;border-radius:4px}
+  .uf-x:hover{color:#e6edf3;background:rgba(255,255,255,.08)}
   .uf-frame{flex:1;width:100%;border:0;background:#fff}
 </style></head><body>
-  <div class="uf-banner"><b>⚠ 用户上传内容</b><span>此内容由用户上传、与本站立场无关；若含违法违规内容，请联系 <a href="mailto:report@muran.tech">report@muran.tech</a></span></div>
+  <div class="uf-banner"><b>⚠ 用户上传内容</b><span>此内容由用户上传、与本站立场无关；若含违法违规内容，请联系 <a href="mailto:report@muran.tech">report@muran.tech</a></span><button class="uf-x" type="button" aria-label="关闭提示" title="关闭" onclick="this.closest('.uf-banner').style.display='none'">✕</button></div>
   <iframe class="uf-frame" referrerpolicy="no-referrer" sandbox="allow-scripts allow-popups allow-forms allow-modals allow-downloads" srcdoc="${esc}"></iframe>
 </body></html>`;
 }

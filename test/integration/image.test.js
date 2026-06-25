@@ -75,5 +75,6 @@ describe("image serving (default route)", () => {
     expect(html).not.toMatch(/allow-same-origin/);     // SECURITY: never same-origin
     expect(html).toContain("srcdoc=");
     expect(html).toContain("<h1>Hi</h1>");             // user content embedded
+    expect(html).toContain("uf-x");                    // notice is dismissible (✕)
   });
 });
